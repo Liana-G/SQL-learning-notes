@@ -1,0 +1,57 @@
+20260506
+
+# 调用表格中的数据；
+USE sql_store;
+
+SELECT 1, 2
+-- FROM customers
+# 在SQL中注释使用--
+-- WHERE customer_id = 1
+-- ORDER BY first_name
+
+
+SELECT 
+	first_name, 
+    last_name, 
+    points, 
+    points + 10, 
+    (points + 10) * 100 AS 'discount factor'
+FROM customers
+
+# 分组
+SELECt DISTINCT state
+FROM customers
+
+# 课堂作业 提取数据（SELECT 语句）
+-- Return all the products
+
+SELECT 
+	name, 
+	unit_price, 
+    unit_price * 1.1 AS 'new price'
+FROM products
+
+
+### 筛选
+SELECT *
+FROM Customers
+WHERE points > 3000
+
+## 符号含义
+>
+>=
+<=
+=
+!= 不等于
+<> 不等于
+
+SELECT *
+FROM Customers
+WHERE birth_date > '1990-01-01'
+
+## 作业
+-- Get the orders placed this year
+
+SELECT *
+FROM orders
+WHERE order_date > '2019-01-01'
