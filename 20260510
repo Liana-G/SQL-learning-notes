@@ -1,0 +1,77 @@
+20260510 继续努力！
+### LIKE语法
+## 教学case示例
+SELECT *
+FROM customers
+WHERE last_name LIKE 'b%' -- 检索姓以 b 开头的顾客
+WHERE last_name LIKE '%b%' --检索姓中含有 b 的顾客
+WHERE last_name LIKE '_b' --检索姓只有 2 个字母，且第二个子母为 b（一个下划线_代表一个子母）
+WHERE last_name LIKE 'b____y'
+
+## 语法内容
+-- % 代表 任意数量的子母 any number of characters
+-- _代表单子母 single character
+
+## 课堂练习
+-- Get the customers whose
+-- 	address contain Trail or Avenue
+--	phone numbers end with 9
+
+SELECT *
+FROM customers
+WHERE (address LIKE '%Trail%' OR 
+	  address LIKE '%Avenue%')
+	  AND phone LIKE '%9'
+
+### REGEXP 正则表达
+SELECT *
+FROM customers
+WHERE last_name REGEXP '^field'
+
+## 语法
+^ $ [] [a-z]
+-- '^field'表示以 field 开头
+-- ‘field$'表示以 field 结尾
+-- ‘field|mac|rose'表示包含 field或者 mac 或者 rose
+-- ‘field$|^mac|rose'
+-- '[gim]e'表示 ge,ie,或me
+-- '[a-h]e'表示包含 ae,be,ce,de,ee,fe,ge,he
+
+## 课堂练习
+-- Get the cutomers whose
+-- first names are ELKA or AMBUR
+-- last names end with EY or ON
+-- last names start with MY or contains SE
+-- last names contain B followed by R or U 
+
+SELECT *
+FROM customers
+-- WHERE first_name REGEXP 'elka|ambur'
+-- WHERE last_name REGEXP 'ey$|on$'
+-- WHERE last_name REGEXP '^my|%se%'
+WHERE last_name REGEXP 'b[ru]'
+
+
+### IS NULL语法
+## 教学case
+# 空值数据条查询
+SELECT *
+FROM customers
+WHERE phone IS NULL
+
+# 非空值数据条查询
+SELECT *
+FROM customers
+WHERE phone IS NOT NULL
+
+## 课堂练习
+-- Get the orders that are not shipped
+SELECT *
+FROM orders
+WHERE shipped_date IS NULL
+
+### ORDER BY 排序
+
+
+
+
