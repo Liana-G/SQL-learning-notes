@@ -1,0 +1,57 @@
+20260507
+
+### 逻辑运算符
+AND OR
+SELECT *
+FROM Customers
+WHERE birth_date > '1990-01-01' OR points > 1000 AND state = 'VA'
+
+## 逻辑运算符的顺序
+AND 优先
+OR 其次
+
+SELECT *
+FROM Customers
+WHERE NOT (birth_date > '1990-01-01' OR points > 1000)
+
+## 课堂练习
+-- From the order_items table, get the items
+-- for order #6
+-- where the total price is greater than 30
+
+SELECT *
+From order_items
+WHERE order_id = 6 AND quantity * unit_price > 30
+
+### IN的使用
+## 例子
+SELECT *
+FROM Customers
+WHERE state NOT IN ('VA', 'FL', 'GA')
+
+## 课堂练习
+-- Return products with
+-- quantity in storck = 49, 38, 72
+
+SELECT *
+FROM products
+WHERE quantity_in_stock IN (49, 38, 72)
+
+### BETWEEN语法
+## case 积分在 1000-3000 之间的顾客
+SELECT *
+FROM customers
+WHERE points >= 1000 AND points <= 3000
+或者
+WHERE ponts BETWEEN 1000 AND 3000
+
+## 课堂练习
+-- Return customers born
+-- 	between 1/1/1990 and 1/1/2000
+
+SELECT *
+FROM customers
+WHERE birth_date BETWEEN '1990-01-01' AND '2000-01-01'
+
+
+
