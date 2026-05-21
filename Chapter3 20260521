@@ -1,0 +1,21 @@
+20260521
+### Compound join conditions
+当一个对象是由多个属性标记时。
+SELECT *
+FROM order_items oi
+JOIN order_item_notes oin
+	ON oi.order_id = oin.order_id
+    AND oi.product_id = oin.product_id
+
+### Outer Joins
+## case
+SELECT 
+	c.customer_id,
+    c.first_name,
+    o.order_id
+FROM customers c
+LEFT JOIN orders o
+	ON c.customer_id = o.customer_id
+ORDER BY c.customer_id
+
+## 课堂作业
