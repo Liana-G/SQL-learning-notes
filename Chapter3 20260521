@@ -19,3 +19,8 @@ LEFT JOIN orders o
 ORDER BY c.customer_id
 
 ## 课堂作业
+-- product_id, name, quantity
+SELECT p.product_id, p.name, oi.quantity
+FROM products p
+LEFT JOIN order_items oi
+	ON oi.product_id = p.product_id
