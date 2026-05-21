@@ -18,9 +18,26 @@ LEFT JOIN orders o
 	ON c.customer_id = o.customer_id
 ORDER BY c.customer_id
 
-## 课堂作业
+## 课堂练习
 -- product_id, name, quantity
 SELECT p.product_id, p.name, oi.quantity
 FROM products p
 LEFT JOIN order_items oi
 	ON oi.product_id = p.product_id
+
+### Outer join between multiple tables
+## 课堂练习
+SELECT 
+	o.order_date,
+    o.order_id,
+    c.first_name,
+    sh.name AS shipper,
+    os.name AS status
+FROM orders o
+LEFT JOIN shippers sh
+	ON sh.shipper_id = o.shipper_id
+LEFT JOIN order_statuses os
+	ON os.order_status_id = o.status
+LEFT JOIN customers c
+	ON c.customer_id = o.customer_id
+ORDER BY order_id
