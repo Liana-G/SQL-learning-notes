@@ -19,3 +19,118 @@ LEFT JOIN orders o
 ORDER BY c.customer_id
 
 ## 课堂作业
+SELECT 
+	o.order_date,
+    o.order_id,
+    c.first_name,
+    sh.name AS shipper,
+    os.name AS status
+FROM orders o
+LEFT JOIN shippers sh
+	ON sh.shipper_id = o.shipper_id
+LEFT JOIN order_statuses os
+	ON os.order_status_id = o.status
+LEFT JOIN customers c
+	ON c.customer_id = o.customer_id
+ORDER BY order_id
+
+2026/5/31
+### Self Outer Joins
+## case
+USE sql_hr;
+
+SELECT 
+	e.employee_id,
+    e.first_name,
+    m.first_name AS manager
+FROM employees e
+LEFT JOIN employees m
+	ON e.reports_to = m.employee_id
+
+### The USING Clause
+只能用于当 2 列的列名完全相同时
+## case
+SELECT *
+FROM order_items oi
+JOIN order_item_notes oin
+	-- ON oi.order_id = oin.order_id AND
+		-- oi.product_id = oin.product_id
+	USING (order_id, product_id)
+
+## 课堂作业
+好棒好棒好棒！
+SELECT 
+	p.date,
+	c.name AS client,
+    p.amount,
+    pm.name    
+FROM payments p
+JOIN clients c
+	USING (client_id)
+JOIN payment_methods pm
+	ON p.payment_method = pm.payment_method_id
+
+### Natural Joins
+## case
+容易出错，随机性较强，日常使用中不太推荐。
+SELECT *
+FROM orders o
+NATURAL JOIN customers c
+
+### CROSS JOINS
+## case
+SELECT 
+	c.first_name AS customer,
+    p.name AS product
+FROM customers c
+CROSS JOIN products p 
+网友评论：笛卡尔积，这是什么东西？
+FROM Gemini: 
+简单来说，笛卡尔积（Cartesian Product）就是数学里的一个“组合大礼包”。
+如果你有两个集合，把第一个集合里的每一个元素，和第二个集合里的每一个元素挨个配对一次，所有可能的配对组合在一起，就是笛卡尔积。
+在 SQL 中，如果你写了一个 CROSS JOIN，或者在 FROM 后面跟了两个表却没有写任何过滤条件（ON 或 WHERE），
+数据库就会放飞自我，把两张表的数据疯狂配对。
+
+## 课堂练习
+# 显式语法 explicit
+SELECT *
+FROM shippers s
+CROSS JOIN products p
+
+# 隐式语法
+SELECT *
+FROM shippers s, products p
+
+### UNOINS
+## case
+# case1
+连接不同的行 rows
+SELECT 
+	order_id,
+    order_date,
+    'Active' AS status
+FROM orders
+WHERE order_date >= '2019-01-01'
+
+UNION
+
+SELECT 
+	order_id,
+    order_date,
+    'Archived' AS status
+FROM orders
+WHERE order_date < '2019-01-01'
+
+# case2
+备注：第一段查询的列名将被用于最终的列名
+SELECT first_name
+FROM customers
+UNION 
+SELECT name
+FROM shippers
+
+## 课堂作业
+
+
+
+
