@@ -101,7 +101,7 @@ CROSS JOIN products p
 SELECT *
 FROM shippers s, products p
 
-### UNOINS
+### UNOINS 联合查询
 ## case
 # case1
 连接不同的行 rows
@@ -130,6 +130,39 @@ SELECT name
 FROM shippers
 
 ## 课堂作业
+SELECT 
+	customer_id,
+    first_name,
+    points,
+    'Bronze' AS type
+FROM customers c
+WHERE points < 2000
+
+UNION
+
+SELECT 
+	customer_id,
+    first_name,
+    points,
+    'Silver' AS type
+FROM customers c
+WHERE points >= 2000 AND points < 3000
+
+UNION
+
+SELECT 
+	customer_id,
+    first_name,
+    points,
+    'Gold' AS type
+FROM customers c
+WHERE points >= 3000
+
+ORDER BY first_name
+# 备注：UNION 里面不能放 ORDER BY，ORDER BY 放在最后，只进行一次排序。
+
+
+
 
 
 
