@@ -1,0 +1,128 @@
+Chapter4
+20260531 
+#### Column Attributes 
+### Inserting a single row
+## case
+INSERT INTO customers
+VALUES (DEFAULT, 'John', 'Smith', '1990-01-01', NULL, 'adress', 'city', 'CA', DEFAULT)
+
+### Inserting multiple rows
+## case
+INSERT INTO shippers (name)
+VALUES ('Shipper1'),
+	   ('Shipper2'),
+       ('Shipper3')
+
+## 课堂作业
+在 products 表格中插入 3 行
+INSERT INTO products (name, quantity_in_stock, unit_price)
+VALUES ('Product1', 2, 0.1),
+	   ('Product2', 4, 0.2),
+       ('Product3', 6, 0.3)
+
+### Inserting Hierarchical Rows
+## case
+同一个订单对应多个商品。
+INSERT INTO orders (customer_id, order_date, status)
+VALUES (1, '2019-01-02', 1);
+
+INSERT INTO order_items
+VALUES
+	(LAST_INSERT_ID(), 1, 1, 2.95),
+    (LAST_INSERT_ID(), 2, 1, 3.95)
+
+### Creating a copy of a Table
+## case
+# case1
+CREATE TABLE orders_archived AS
+SELECT * FROM orders
+
+# case2
+INSERT INTO orders_archived ()
+
+SELECT * 
+FROM orders
+WHERE order_date < '2019-01-01'
+-- 作为sub query
+
+## 课堂练习
+CREATE TABLE invoices_archived AS
+SELECT 
+	i.invoice_id,
+    i.number,
+    c.name AS client,
+    i.invoice_total,
+    i.payment_total,
+    i.invoice_date,
+    i.payment_date
+    
+FROM invoices i
+JOIN clients c
+	USING (client_id)
+WHERE payment_date IS NOT NULL
+
+
+### Update a single row
+## case
+UPDATE invoices
+SET payment_total = 10, payment_date = '2019-03-01'
+WHERE invoice_id = 1 索引值
+
+### Update multiple rows
+## case
+菜单栏--setting--SQL editor--取消 Safe Updates
+UPDATE invoices
+SET 
+	payment_total = invoice_total *0.5,
+    payment_date = due_date
+WHERE client_id = 3
+
+## 课堂练习
+USE sql_store;
+
+UPDATE customers
+SET 
+	points = points + 50
+WHERE birth_date < '1990-01-01'
+
+### Use subqueries in Updates
+## case
+USE sql_invoicing;
+
+UPDATE invoices
+SET 
+	payment_total = invoice_total *0.5,
+    payment_date = due_date
+WHERE client_id IN
+			(SELECT client_id
+			FROM clients
+			WHERE state IN ('CA', 'NY'))
+
+## 课堂练习
+USE sql_store;
+
+UPDATE orders
+SET 
+	comments = 'Gold customer'
+WHERE customer_id IN
+			(SELECT customer_id
+			FROM customers
+			WHERE points >= 3000)
+
+### Delete rows
+## case
+USE sql_invoicing;
+
+DELETE FROM invoices
+WHERE client_id = (
+			SELECT *
+			FROM clients
+			WHERE name = 'Myworks')
+
+### Restore the Databases
+## case
+打开 create-database.sql文件后，点击⚡️标志执行
+
+
+
+
