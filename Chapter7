@@ -1,0 +1,60 @@
+20260714
+### Numeric Functions
+## case
+SELECT ROUND() 四舍五入
+ROUND(5.73,1) = 5.7
+ROUND(5.73) = 6
+
+TRUNCATE() 截断
+CEILING() 向上取整
+FLOOR() 向下取整
+ABS() 绝对值
+RAND() 随机生成一个 0-1 之间的小数
+
+# 全部函数见官网 https://dev.mysql.com/doc/refman/8.0/en/numeric-functions.html
+
+### STRING Values
+SELECT LENGTH('sky') = 3
+UPPER('sky') = SKY
+LOWER()
+LTRIM() 删除左边开始的空格
+RTRIM() 删除右边结尾的空格
+TRIM() 删除前后的空格
+LEFT('Kindergarten', 4) = Kind
+RIGHT('Kindergarten', 6) = garten
+SUBSTRING('Kindergarten', 3, 5) = nderg
+LOCATE('n', 'Kindergarten') = 3
+CONCAT('first', 'last') = firstlast
+
+# 全部字符串函数见官网 https://dev.mysql.com/doc/refman/9.7/en/string-functions.html
+
+### DATE Functions
+## case
+NOW() 包含日期和时间
+CURDATE() 日期
+CURTIME() 时间
+YEAR(NOW())
+MONTH(NOW())
+HOUR(NOW())
+DAYNAME((NOW())
+MONTHNAME(NOW())
+EXTRACT (YEAR FROM NOW())
+
+## 课堂练习
+YEAR(order_date) = YEAR(NOW())
+
+
+### FORMATTING dates and times
+## case
+SELECT DATE_FORMAT(NOW(), '%y') = 26
+DATE_FORMAT(NOW(), '%Y') = 2026
+DATE_FORMAT(NOW(), '%m') = 7
+DATE_FORMAT(NOW(), '%M') = July
+('%M, %d, %Y) = July 14 2026
+('%H:%i %p'))
+# 见官网：https://dev.mysql.com/doc/refman/9.7/en/date-and-time-functions.html
+
+
+
+
+
