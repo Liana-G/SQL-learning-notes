@@ -54,7 +54,94 @@ DATE_FORMAT(NOW(), '%M') = July
 ('%H:%i %p'))
 # 见官网：https://dev.mysql.com/doc/refman/9.7/en/date-and-time-functions.html
 
+### Calculate dates and times
+DATE_ADD(NOW(), INTERVAL 1 DAY)
+DATE_ADD(NOW(), INTERVAL 1 YEAR) 现在的时间加上一年
+DATE_ADD(NOW(), INTERVAL -1 YEAR) 现在的时间减去一年
+DATE_SUB(NOW(), INTERVAL 1 YEAR) 现在的时间减去一年
 
+DATEDIFF('2019-01-05', '2019-01-01') 计算 2 个日期的间隔（只算天数 days）
+TIME_TO_SEC('09:00') 计算从零点开始的秒数
+TIME_TO_SEC('09:00') - TIME_TO_SEC('09:02') = -120
+
+### IFNULL & COALESCE
+## case
+IFNULL 适用于双参数场景
+COALESCE 适用于多参数场景
+
+# IFNULL
+USE sql_store;
+
+SELECT 
+	order_id,
+    IFNULL(shipper_id, 'Not assigned') AS shipper
+FROM orders
+
+# COALESCE
+USE sql_store;
+
+SELECT 
+	order_id,
+    COALESCE(shipper_id, comments, 'Not assigned') AS shipper
+//如果 shipper_id 为空值，则用comments赋值，都为空值的情况下才用 Not assigned. 
+FROM orders
+
+## 课堂练习
+--字母去空格
+--IFNULL 或者 COALESCE 使用
+USE sql_store;
+
+SELECT 
+	CONCAT(first_name, ' ', last_name) AS customer,
+    COALESCE(phone, 'Unknown') AS phone
+FROM customers
+
+### IF Function
+## case
+USE sql_store;
+
+SELECT 
+	order_id,
+    order_date,
+    IF(YEAR(order_date) = YEAR(NOW()) - 7, 'Active', 'Archived') AS status
+FROM orders
+
+## 课堂作业
+USE sql_store;
+
+SELECT 
+	product_id,
+    name,
+    COUNT(*) AS orders,
+    IF(COUNT(*) = 1, 'Once', 'Many times') AS Frequency
+FROM products
+JOIN order_items USING(product_id)
+GROUP BY product_id
+
+### Case operator
+## case
+USE sql_store;
+SELECT
+	order_id,
+    CASE
+		WHEN YEAR(order_date) = YEAR(NOW()) - 7 THEN 'Active'
+		WHEN YEAR(order_date) = YEAR(NOW()) - 8 THEN 'Last Year'
+		WHEN YEAR(order_date) < YEAR(NOW()) - 8 THEN 'Archived'
+		ELSE 'Future'
+    END AS category
+FROM orders
+
+## 课堂作业
+USE sql_store;
+SELECT
+	CONCAT(first_name, ' ', last_name) AS customer,
+    points,
+    CASE
+		WHEN points > 3000 THEN 'Gold'
+		WHEN points >= 2000 THEN 'Silver' 这一句注意！不需要写<=3000，因为只有<=3000才会落到第二步
+		ELSE 'Bronze'
+    END AS category
+FROM customers
 
 
 
