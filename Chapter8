@@ -37,3 +37,19 @@ SELECT
 FROM invoices i
 JOIN clients c USING (client_id)
 GROUP BY c.client_id, c.name
+
+
+### Altering OR Droping Views
+## case
+DROP VIEWS
+CREATE OR REPLACE VIEW
+保存到 SQL 文件夹中，并放在源代码中管理
+
+### Updatable views
+DELETE FROM invoices_with_balance 在视图中删除记录
+WHERE invoice_id = 1
+
+USE sql_invoicing;
+UPDATE invoices_with_balance
+SET due_date = DATE_ADD(due_date, INTERVAL 2 DAY)
+WHERE invoice_id = 2
