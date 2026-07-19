@@ -1,0 +1,47 @@
+20260719
+### Transactions ###
+// 听不懂的一章 QAQ
+
+### CREATING TRANSACTIONS
+USE sql_store;
+
+START TRANSACTION;
+
+INSERT INTO orders (customer_id, order_date, status)
+VALUES (1, '2019-01-01', 1);
+
+INSERT INTO order_items
+VALUES (LAST_INSERT_ID(), 1, 1, 1);
+
+COMMIT;
+
+### CONCURRENCY and LOCKING
+## CONCURRENCY Problems
+--Lost Updates
+--Dirty Reads (事务 A 被 B 虚晃一枪，B 更新后又撤回，中间状态被 A 读取）
+  解决方案：隔离 Isolation，READ COMMITTED
+--None Repeating Reads
+  解决方案：Repeatable Reads, Isolation
+--Phantom Reads
+  解决方案：SERIALIZABLE 序列化
+
+### Transaction Isolation Levels
+## 不同的隔离等级定义
+1.Read Uncommitted 
+2.Read Committed
+3.Repeatable read
+4.Serializable
+1-->4, 上锁更多，解决/避免的问题更多，同时资源消耗更多。
+mySQL 默认为 Level3 Repeatable read.
+
+## 如何设置不同的隔离等级
+SHOW VARIABLES LIKE 'transaction_isolation';
+SET TRANSACTION ISOLATION LEVEL SERIALIZABLE; 
+SET  SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE; //仅设置未来的事件隔离等级
+SET GLOBAL TRANSACTION ISOLATION LEVEL SERIALIZABLE;  //设置所有的事件隔离等级
+
+## READ UNCOMMITTED
+
+
+
+
