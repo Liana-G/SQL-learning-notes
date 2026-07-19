@@ -1,0 +1,251 @@
+Chapter9
+20260717
+
+### CREATING PROCEDURE
+## case
+创建存储过程
+（1）使用workbench代码创建
+DELIMITER $$
+
+CREATE PROCEDURE get_clients()
+BEGIN
+	SELECT * FROM clients;
+END$$
+
+DELIMITER ;
+
+（2）使用 workbench 窗口按钮创建
+右键创建
+CREATE PROCEDURE `new_procedure` ()
+BEGIN
+
+END
+
+调用存储过程
+CALL sql_invoicing.get_clients();
+
+## 课堂练习
+DELIMITER $$
+
+CREATE PROCEDURE get_invoices_with_balance()
+BEGIN
+	SELECT * 
+    FROM invoices
+    WHERE (invoice_total - payment_total) > 0;
+END$$
+
+DELIMITER ;
+
+
+### DROP Stored Procedures
+## case
+DROP PROCEDURE get_clients
+或者更安全的一种方法
+DROP PROCEDURE IF EXISTS get_clients
+
+
+### Parameters
+## case
+创建带参数的存储过程：
+DROP PROCEDURE IF EXISTS get_clients_by_state;
+
+DELIMITER $$
+CREATE PROCEDURE get_clients_by_state
+(
+	state CHAR(2) -- VARCHAR
+)
+BEGIN
+	SELECT * FROM clients c
+    WHERE c.state = state;
+END $$
+
+调用参数：
+call sql_invoicing.get_clients_by_state('CA');
+
+## 课堂作业
+DROP PROCEDURE get_invoices_by_client;
+
+DELIMITER $$
+CREATE PROCEDURE get_invoices_by_client
+(
+	client_id INT
+)
+BEGIN
+	SELECT * FROM invoices i
+    WHERE i.client_id = client_id;
+END $$
+
+call sql_invoicing.get_invoices_by_client(1);
+
+### Parameters with Default Values
+## case
+ NULL默认返回 CA
+DROP PROCEDURE get_clients_by_state;
+
+DELIMITER $$
+CREATE PROCEDURE get_clients_by_state(
+	state CHAR(2) -- VARCHAR
+)
+BEGIN
+	IF state IS NULL OR TRIM(state) = '' THEN
+		SET state = 'CA';
+	END IF;
+    
+	SELECT * FROM clients c
+    WHERE c.state = state;
+END $$
+
+NULL默认返回全部数据记录
+DROP PROCEDURE get_clients_by_state;
+
+DELIMITER $$
+CREATE PROCEDURE get_clients_by_state(
+	state CHAR(2) -- VARCHAR
+)
+BEGIN
+	IF state IS NULL OR TRIM(state) = '' THEN
+		SELECT * FROM clients;
+	ELSE
+    	SELECT * FROM clients c
+		WHERE c.state = state;
+	END IF;
+END $$
+
+使用 IFNULL 参数
+DROP PROCEDURE get_clients_by_state;
+
+DELIMITER $$
+CREATE PROCEDURE get_clients_by_state(
+	state CHAR(2) -- VARCHAR
+)
+BEGIN
+	SELECT * FROM clients c
+	WHERE c.state = IFNULL(state, c.state); 如果是 NULL 就返回 state，如果不是 NULL，就返回 c.state（确实非常优雅！）
+END $$
+
+### 课堂作业
+DROP PROCEDURE get_payments;
+DELIMITER $$
+
+CREATE PROCEDURE get_payments(
+client_id INT,
+payment_method_id TINYINT
+)
+
+BEGIN
+	SELECT * FROM payments p
+    WHERE 
+		p.client_id = IFNULL(client_id, p.client_id) AND
+		p.payment_method = IFNULL(payment_method_id, p.payment_method); 
+//注意⚠️如果这里的输入值为 NULL，那么意味着 p.payment_method = p.payment_method，这句话是恒TRUE 的，所以系统这里不会再设置筛选，会返回所有值。
+
+END $$
+
+### Invalid parameters 
+DROP PROCEDURE IF EXISTS get_payments;
+
+DELIMITER $$
+
+CREATE PROCEDURE get_payments
+(
+	invoice_id INT,
+    payment_amount DECIMAL(9,2),
+    payment_date DATE
+)
+
+BEGIN
+	IF payment_amount <= 0 THEN
+		SIGNAL SQLSTATE '22003'
+			SET MESSAGE_TEXT = 'Invalid payment amount';
+	END IF;
+    
+	UPDATE invoices i
+    SET
+		i.payment_total = payment_amount,
+        i.payment_date = payment_date
+	WHERE
+		i.invoice_id = invoice_id;
+END $$
+
+### Output parameters
+## case
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_unpaid_invoices_for_client`(
+	client_id INT
+)
+BEGIN
+	SELECT COUNT(*), SUM(invoice_total)
+    FROM invoices i
+    WHERE i.client_id = client_id
+		AND payment_total = 0;
+END
+
+调用输出参数
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_unpaid_invoices_for_client`(
+	client_id INT,
+    OUT invoices_count INT,
+    OUT invoices_total DECIMAL(9,2)
+)
+BEGIN
+	SELECT COUNT(*), SUM(invoice_total)
+    INTO invoices_count, invoices_total
+    FROM invoices i
+    WHERE i.client_id = client_id
+		AND payment_total = 0;
+END
+
+调用输出参数后，生成的代码如下：（没听懂这里）
+set @invoices_count = 0;
+set @invoices_total = 0;
+call sql_invoicing.get_unpaid_invoices_for_client(3, @invoices_count, @invoices_total);
+select @invoices_count, @invoices_total;
+
+### Variables
+创建
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_risk_factor`()
+BEGIN
+	  DECLARE risk_factor DECIMAL(9, 2) DEFAULT 0;
+    DECLARE invoices_total DECIMAL(9, 2);
+    DECLARE invoices_count INT;
+    SELECT COUNT(*), SUM(invoice_total)
+    INTO invoices_count, invoices_total
+    FROM invoices;
+    
+    SET risk_factor = invoices_total / invoices_count * 5;
+    
+    SELECT risk_factor;
+END
+
+调用
+call sql_invoicing.get_risk_factor();
+
+### Functions
+创建自己的函数
+函数属性/Attributes
+--Deterministic
+--Reads SQL Data
+--Modifies SQL Data
+
+CREATE DEFINER=`root`@`localhost` FUNCTION `get_risk_factor_for_client`(
+	client_id INT
+) RETURNS int
+    READS SQL DATA
+BEGIN
+	DECLARE risk_factor DECIMAL(9, 2) DEFAULT 0;
+    DECLARE invoices_total DECIMAL(9, 2);
+    DECLARE invoices_count INT;
+    SELECT COUNT(*), SUM(invoice_total)
+    INTO invoices_count, invoices_total
+    FROM invoices i
+    WHERE i.client_id = client_id;
+    
+    SET risk_factor = invoices_total / invoices_count * 5;
+	
+    RETURN IFNULL(risk_factor, 0);
+END
+
+如何调用/使用已经创建的函数？
+SELECT
+	client_id,
+    name,
+    get_risk_factor_for_client(client_id)
+FROM clients
