@@ -161,6 +161,49 @@ WHERE points >= 3000
 ORDER BY first_name
 # 备注：UNION 里面不能放 ORDER BY，ORDER BY 放在最后，只进行一次排序。
 
+20260521
+### Compound join conditions
+当一个对象是由多个属性标记时。
+SELECT *
+FROM order_items oi
+JOIN order_item_notes oin
+	ON oi.order_id = oin.order_id
+    AND oi.product_id = oin.product_id
+
+### Outer Joins
+## case
+SELECT 
+	c.customer_id,
+    c.first_name,
+    o.order_id
+FROM customers c
+LEFT JOIN orders o
+	ON c.customer_id = o.customer_id
+ORDER BY c.customer_id
+
+## 课堂练习
+-- product_id, name, quantity
+SELECT p.product_id, p.name, oi.quantity
+FROM products p
+LEFT JOIN order_items oi
+	ON oi.product_id = p.product_id
+
+### Outer join between multiple tables
+## 课堂练习
+SELECT 
+	o.order_date,
+    o.order_id,
+    c.first_name,
+    sh.name AS shipper,
+    os.name AS status
+FROM orders o
+LEFT JOIN shippers sh
+	ON sh.shipper_id = o.shipper_id
+LEFT JOIN order_statuses os
+	ON os.order_status_id = o.status
+LEFT JOIN customers c
+	ON c.customer_id = o.customer_id
+ORDER BY order_id
 
 
 
