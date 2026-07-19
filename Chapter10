@@ -1,0 +1,125 @@
+20260719
+Triggers
+
+### Triggers
+## case
+创建Trigger
+DROP TRIGGER IF EXISTS payments_after_insert;
+DELIMITER $$
+
+CREATE TRIGGER payments_after_insert
+	AFTER INSERT ON payments
+    FOR EACH ROW
+
+BEGIN
+	UPDATE invoives
+    SET payment_total = payment_total + NEW.amount
+    WHERE invoice_id = NEW.invoice_id;
+END $$
+
+DELIMITER ;
+
+## 课堂作业
+创建 Trigger
+DROP TRIGGER IF EXISTS payments_after_insert;
+DELIMITER $$
+
+CREATE TRIGGER payments_after_insert
+	AFTER DELETE ON payments
+    FOR EACH ROW
+
+BEGIN
+	UPDATE invoives
+    SET payment_total = payment_total - OLD.amount
+    WHERE invoice_id = OLD.invoice_id;
+END $$
+
+DELIMITER ;
+
+调用 Trigger
+SELECT * FROM sql_invoicing.payments;
+
+DELETE
+FROM payments
+WHERE payment_id = 10
+
+
+### View Triggers 查看触发器
+SHOW TRIGGERS
+可以展示所有的触发器
+
+SHOW TRIGGERS LIKE 'payment%'
+展示所有名称与 payment 有关的触发器
+
+### DROP Trigegrs
+DROP TRIGGER 
+DROP TRIGGER IF EXISTS payment_after_insert
+
+### Sing Triggers for Auditting 记录每一条变更 Log
+## case
+USE sql_invoicing;
+
+CREATE TABLE payments_audit
+(
+	client_id 	INT,
+    date		DATE,
+    amount		DECIMAL(9, 2),
+    action_type	VARCHAR(50),
+    action_date	DATETIME
+)
+
+同步更新 Triggers 代码
+DROP TRIGGER IF EXISTS payments_after_insert;
+DELIMITER $$
+
+CREATE TRIGGER payments_after_insert
+	AFTER DELETE ON payments
+    FOR EACH ROW
+
+BEGIN
+	UPDATE invoives
+    SET payment_total = payment_total - OLD.amount
+    WHERE invoice_id = OLD.invoice_id;
+
+  INSERT INTO payments_audit
+  VALUES(OLD.client_id, OLD.date, OLD.amount, 'Delete', NOW());
+END $$
+
+DELIMITER ;
+
+如何调用？
+DELETE FROM payments
+WHERE payment_id = 11
+
+### EVENTS 事件
+## 1.查看所有的 EVENT/开启或者关闭 EVENT 的状态
+SHOW VARIABLES LIKE 'event%';
+SET GLOBAL event_scheduler = ON/OFF
+
+## 2.创建EVENT
+DELIMITER $$
+
+CREATE EVENT yearly_delete_stale_audit_rows
+ON SCHEDULE
+	-- AT '2026-07-08' 只执行单次
+    EVERY 1 YEAR STARTS '2019-01-01' ENDS '2029-01-01'
+DO BEGIN
+	DELETE FROM payments_audit
+    WHERE action_date < NOW() - INTERVAL 1 YEAR;
+END $$
+
+DELIMITER ;
+
+## 3. VIEW, DROP and ALTER EVENTS
+## VIEW EVENTS
+SHOW EVENTS
+
+## DROP EVENTS
+DROP EVENT IF EXISTS + name
+
+## ALTER EVENT
+1.语法同 CREATE EVENT
+
+2.禁用/启动EVENTS
+ALTER EVENT yearly_delete_stale_audit_rows DISABLE;
+ALTER EVENT yearly_delete_stale_audit_rows ENABLE;
