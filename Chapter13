@@ -1,0 +1,60 @@
+20260726
+Designing Databases
+
+### Data Modeling
+4 steps:
+> Understanding the requirements
+> Build a conceptual model
+> Build a logical model
+> Buid a physical model
+
+### Conceptual model
+2种方式：
+> Entity Relationships(ER)
+> UML（Unified Modeling Languages, 标准建模语言图）
+
+Tools:
+> Microsoft visio
+> draw.io
+> Lucid.charts
+
+包含的信息：entity, atrributes, relationships
+
+### Logical models
+在 conceptual models 的基础上，
+（1）增加 data types 信息。
+（2）尽可能细分 attributes，比如姓名，拆分为姓和名。
+
+Relationships 类别
+(1) one to one
+(2) one to many
+(3) many to many
+
+
+### Physical models
+Primary keys
+Foreign keys(parent--child, key--foreign)
+只有当设置表格的 primary keys 时，表格关系才能设置。
+
+## Foreign keys constraints
+当主键值变化（update 或 delete）时，需要确认对应的 foreign keys值如何变化（CASCADE/RESTRICT/NO ACTION/SET NULL)
+
+## Normalization 
+7条规范（可以只关注前 3 条）
+NormalForm1(1NF)： Each cell should have a single value, and we cannot have repeated columns.
+一个单元格中不能包含多个值，如果出现这个情况/问题，可以把该属性单独建立表格。
+NormalForm2(2NF): Each table should describe one entity and every column in that table should describe that entity.
+NormalForm3(3NF): A column in the table should not be derived from other columns.
+
+don't memorize the rules, but try to focus on avoiding the redundancy.
+
+EAV:Entity--Attribute--Value
+
+### Forward Engineering a Model
+
+
+
+
+
+
+
