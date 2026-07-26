@@ -1,0 +1,71 @@
+20260726
+DATA Types
+
+### STRING types
+CHAR--fixed length
+VARCHAR--unfixed length, max: 65535 characters(~64KB)
+--VARCHAR(50) for short strings
+--VARCHAR(255) for medium-length strings
+MEDIUMTEXT--max: 16MB
+LONGTEXT--max: 4GB
+TINYTEXT--max: 255 bytes
+TEXT--max: 64KB，最好使用 VARCHAR（这个范围长度的文本）
+
+### Integer types
+TINYINT--1b  [-128, 127]
+UNSIGNED TINYINT-- [0, 255],正整数
+SMALLINT--2b [-32K, 32K]
+MIDIUMINT--3b [-8M, 8M]
+INT--4b [-2B, 2B]
+BIGINT--8b [-9Z, 9Z]
+ZEROFILL--显示时自动补零（不影响存储），比如 INT(4)= 0004
+
+USE the smallest data type that suits your needs.
+
+### Fixed-point and Floating-point types
+1.DECIMAL(p, s) //p,precision 精度；s,为小数位数
+DECIMAL(9, 2) ==> 1234567.89
+别称：DEC/NUMERIC/FIXED
+2.FLOAT 4b
+3.DOUBLE 8b
+
+### Boolean types
+BOOL/BOOLEAN
+TRUE/FALSE 1/0
+
+### Enum and Set Types 枚举和集合类型
+1.Enum('small', 'medium', 'large')枚举法
+不推荐使用枚举法 Enum：（1）新增新的规格很浪费时间（重建表格数据）;(2)数据不支持重复使用
+建议新建【规格】表格
+2. SET(...)集合
+
+### Date and Time types
+DATE
+TIME
+DATETIME 8b
+TIMESTAMP 4b(year up to 2038) //时间戳
+YEAR
+
+
+### Blob types
+存储大型二进制数据，包含图像、视频、PDF、word 等
+1.TINYBLOB 255b
+2.BLOB 65KB
+3.MEDIUMBLOB 16MB
+4.LONGBLOB 4GB
+
+### JSON types
+JSON data: Lightweight format for storing and transferring data over the internet.
+使用大括号{}定义对象。大括号中可以有一个或者多对键值对 key-value.
+
+UPDATE products
+SET properties = JSON_OBJECT(
+  'weight', 10,
+  'dimension', JSON_ARRAY(1, 2, 3),
+  'manufacturer', JSON_OBJECT('name', 'sony')
+)
+WHERE product_id = 1;
+
+JSON_SET() 修改值
+JSON_REMOVE() 删除值
+
