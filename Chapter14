@@ -1,0 +1,47 @@
+20260805
+Chapter14 INDEX
+
+### INDEXES
+Design indexes based on your queies not your tables.
+Binary Trees 二叉树形式存储索引
+
+### Creating Indexes
+USE sql_store;
+EXPLAIN SELECT customer_id FROM customers WHERE state = 'CA';
+
+SELECT COUNT(*) FROM customers;
+
+CREATE INDEX idx_state ON customers(state);
+
+
+### VIEWing Indexes
+USE sql_store;
+SHOW Indexes IN customers;
+
+### Prefix Indexes
+### Full-text Indexes
+USE sql_blog;
+SELECT *
+FROM posts
+WHERE title LIKE '%react redux%' OR 
+		body LIKE '%react redux%';
+
+创建全文索引
+USE sql_blog;
+CREATE FULLTEXT INDEX idx_title_body ON posts(title, body);
+
+SELECT *
+FROM posts
+WHERE MATCH(title, body) AGAINST('react redux'); // 包含 react 或者 redux
+WHERE MATCH(title, body) AGAINST('react -redux' IN BOOLEAN MODE); // 包含 react，但是不包含 redux
+WHERE MATCH(title, body) AGAINST('react -redux +form' IN BOOLEAN MODE); // 包含 react，但是不包含 redux， 并包含 form
+WHERE MATCH(title, body) AGAINST('''handling a form''' IN BOOLEAN MODE)//包含 handling a form 这个短语
+
+### Composite Indexes 复合索引
+USE sql_store;
+CREATE INDEX idx_state_points ON customers(state, points);
+EXPLAIN SELECT customer_id FROM customers
+WHERE state = 'CA' AND points > 1000;
+
+
+
