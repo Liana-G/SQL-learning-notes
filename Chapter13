@@ -52,6 +52,31 @@ EAV:Entity--Attribute--Value
 
 ### Forward Engineering a Model
 
+### CREATE and DROP Database
+CREATE/DROP DATABASE IF NOT EXISTS sql_store2;
+
+### CREATE Tables
+USE sql_store2;
+DROP TABLE IF EXISTS customers;
+CREATE TABLE IF NOT EXISTS customers
+(
+  customer_id INT PRIMARY KEY AUTO_INCREMENT,
+  first_name VARCHAR(50) NOT NULL
+)
+
+### ALTER TABLE
+ALTER TABLE customers
+  ADD last_name VARCHAR(50) NOT NULL AFTER first_name,
+  MODIFY COLUMN first_name VARCHAR(55) DEFAULT '',
+  DROP points
+;
+
+### Storage Engines
+更改 Engines
+Alter TABLE customers
+ENGINE = InnoDB
+
+常用的 2 个 Engines: InnoDB/MyISAM
 
 
 
